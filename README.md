@@ -26,7 +26,7 @@ As I was building my app using Supabase Edge functions, I can't stop thinking my
    ```
 
 ### Prepare input file
-1. create new scenario file - at minimum it should contains `models` and `function url`
+1. create new scenario file - at minimum it should contains `models` and `inputs`
 
 ## Usage
 
@@ -35,5 +35,5 @@ Run the script from your terminal, passing the name of the table you want to che
 You can run the script directly with `node`:
 
 ```bash
-node run.js <function-name> <scenario-name>
+node run.js <function-name> <path-to-scenario>
 ```
