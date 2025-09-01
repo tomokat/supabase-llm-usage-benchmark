@@ -11,7 +11,12 @@ As I was building my app using Supabase Edge functions, I can't stop thinking my
  - add `import { logLLMResult } from "../lib/llmLogger.ts"` at the top of the file;
  - receive 2 more parameters into the Edge function (model, llmUsageBenchmarkToken)
  - add `const start = performance.now();` right before LLM call
- - allow model to be dynamically set like `model: model? model: 'gpt-4o'`
+ - allow model to be dynamically set like `model: model || 'gpt-4o',`
+   Note: `gpt-5` series expect to receive some parameter differently, like:
+   ```
+   ...((model || 'gpt-4o').startsWith('gpt-4') ? { temperature: 0.3} : {temperature: 1}),
+   ...((model || 'gpt-4o').startsWith('gpt-5') ? { max_completion_tokens: 4000 } : { max_tokens: 4000 }),
+   ```
  - add `const end = performance.now();` right after LLM call
  - add `const latencyMs = end - start;`
  - call `logLLMResult` function with the following parameters (but change rawInput and rawResponse to your own)
