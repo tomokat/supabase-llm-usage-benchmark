@@ -2,6 +2,30 @@
 
 As I was building my app using Supabase Edge functions, I can't stop thinking my desire to quickly run my Supabase Edge functions with various LLM models and quickly compare their results. I can't seem to find something similar, so I decided to build one myself.
 
+My initial motivation is to have a quick way to run my Edge function with various OpenAI API models (though I can see this expand to support other models, I only used it to compare LLM model performance of say GPT 4 series vs. GPT5 series)
+
+You can find the API model pricing for OpenAI [here](https://openai.com/api/pricing/) or more [detailed pricing here](https://platform.openai.com/docs/pricing)
+
+## Get list of model names
+(I got this from Chat GPT - didn't test it myself)
+Node.js example
+```
+const { OpenAI } = require("openai");
+const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+async function listModels() {
+  const models = await client.models.list();
+  for await (const m of models.data) {
+    console.log(m.id);
+  }
+}
+
+listModels();
+```
+
+or the ones I know it works:
+"o3", "o3-mini", "gpt-4o", "gpt-4o-mini", "gpt-5", "gpt-5-mini"
+
 ## setup
 
 ### Supabase modifications
@@ -12,10 +36,11 @@ As I was building my app using Supabase Edge functions, I can't stop thinking my
  - receive 2 more parameters into the Edge function (model, llmUsageBenchmarkToken)
  - add `const start = performance.now();` right before LLM call
  - allow model to be dynamically set like `model: model || 'gpt-4o',`
-   Note: `gpt-5` series expect to receive some parameter differently, like:
+   Note: `gpt-4` series expect to receive some parameter differently:
+   (this code example is directly manipulating JSON request body)
    ```
    ...((model || 'gpt-4o').startsWith('gpt-4') ? { temperature: 0.3} : {temperature: 1}),
-   ...((model || 'gpt-4o').startsWith('gpt-5') ? { max_completion_tokens: 4000 } : { max_tokens: 4000 }),
+   ...((model || 'gpt-4o').startsWith('gpt-4') ? { max_tokens: 4000 } : { max_completion_tokens: 4000 }),
    ```
  - add `const end = performance.now();` right after LLM call
  - add `const latencyMs = end - start;`
@@ -58,7 +83,7 @@ Run the script from your terminal, passing the name of the table you want to che
 You can run the script directly with `node`:
 
 ```bash
-node run.js <function-name> <path-to-scenario>
+npm start <function-name> <path-to-scenario>
 ```
 
 ## Viewer
