@@ -8,8 +8,6 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY
 )
 
-const input = '';
-
 async function run(functionName, scenarioPath) {
   const scenarioData = JSON.parse(fs.readFileSync(scenarioPath, 'utf-8'));
   //console.log(`Loaded scenario data from ${scenarioPath}`);
@@ -52,7 +50,5 @@ if(!functionName || !scenarioPath) {
   process.exit(1);
 }
 
-// assume functionName is analyze-resume-data
-// assume scenarioPath is scenario/analyze-resume-data/test-data.json for now
 run(functionName, scenarioPath);
 
